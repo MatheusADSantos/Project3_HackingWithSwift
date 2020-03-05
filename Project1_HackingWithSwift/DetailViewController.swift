@@ -19,6 +19,8 @@ class DetailViewController: UIViewController {
             self.title = "This image is \(title)"
         }
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+        
         navigationItem.largeTitleDisplayMode = .never
 
         if let imageToLoad = selectedImage {
@@ -26,7 +28,6 @@ class DetailViewController: UIViewController {
         }
         
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -37,15 +38,21 @@ class DetailViewController: UIViewController {
         super.viewWillDisappear(true)
         navigationController?.hidesBarsOnTap = false
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @objc func shareTapped() {
+        guard let image = imageView.image?.jpegData(compressionQuality: 0.8) else {
+            print("Don't have image")
+            return
+        }
+        guard let imageName = titleImage else {
+            print("Don't have name from this image")
+            return
+        }
+        
+        
+        let activityVC = UIActivityViewController(activityItems: [image, imageName], applicationActivities: [])
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityVC, animated: true)
     }
-    */
 
 }
